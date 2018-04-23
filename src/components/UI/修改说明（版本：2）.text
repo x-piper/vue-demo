@@ -1,0 +1,72 @@
+1.基于element ui版本：2.* ，添加时间2017-08-13
+2.修改说明：
+
+css文件:element.css禁止修改，在common.css中覆盖原来的样式，并进行标注说明。示例如下：
+<!-- element ui select -->
+.el-select-dropdown__item.selected.hover {
+  background-color: #ecf0f2;
+}
+<!-- /element ui select -->
+
+
+js(vue)文件：可以在源文件上进行修改，但是必须备份element UI源文件的代码,并将自己修改的文件添加piper注释标注。示例如下：
+ //this.gutterWidth = scrollbarWidth();
+ this.gutterWidth = 0;//piper,safari下表格错列
+
+
+修改备注：
+@table组件
+1.packages/table/src/table-column.js
+源文件：renderCell: function(h, { row, store }, proxy) {
+      const expanded = store.states.expandRows.indexOf(row) > -1;
+      return <div class={ 'el-table__expand-icon ' + (expanded ? 'el-table__expand-icon--expanded' : '') }
+                  on-click={ () => proxy.handleExpandClick(row) }>
+        <i class='el-icon el-icon-arrow-right'></i>
+      </div>;
+    },
+    
+ 项目文件：renderCell: function(h, { row, store }, proxy) {
+      const expanded = store.states.expandRows.indexOf(row) > -1;
+      return <div class={ 'el-table__expand-icon ' + (expanded ? 'el-table__expand-icon--expanded' : '') }
+                  on-click={ () => proxy.handleExpandClick(row) }>
+        <i class='iconfont icon-down'></i>
+      </div>;
+},
+@add：
+props中增加了：
+ helpTips: {
+      type: [String, Boolean],
+      default: false
+    }
+    created中添加了：
+     helpTips: this.helpTips === '' ? true : this.helpTips,
+2.piperUI/packages/table/src/table-header.js
+thead标签中添加了：
+{
+ column.helpTips?
+  <el-tooltip  placement="top">
+    <div slot="content">{ column.helpTips}</div>
+       <i class='iconfont icon-question'></i>
+    </el-tooltip>
+  :''
+}
+@pagination 组件
+1.piperUI/packages/select/src/option.vue
+@add：@mouseleave="blurItem"
+@add： blurItem() {
+        this.parent.hoverIndex = -1;//piper,mouseleave取消hover样式
+      },
+@add：selectOptionClick方法中增加了
+ this.index = -1;//piper,每页size改变时，新生成数据后取消hover样式
+@Notification 通知
+this.$notify({
+  showClose: true,
+  duration:0,
+  typeImg: 'success_img',
+  customClass:'el-notification-icon-img',
+  message: '这是一条消息提示'
+});
+ success_img: 'success-img',
+  info_img: 'info-img',
+  error_img: 'error-img',
+  cry_img: 'cry-img'

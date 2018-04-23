@@ -1,0 +1,6 @@
+@import "mixins/mixins";
+
+@include b(aside) {
+  overflow: hidden;
+  background-color: rgb(84, 92, 100);
+}
